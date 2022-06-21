@@ -1,46 +1,51 @@
 class Rectangle {
-    
-    // constructor(width, height, centerX, centerY, rotation, outerWidth, outerHeight, red, green, blue, alpha){
-    //     this.width = width
-    //     this.height = height
-    //     this.centerX = centerX
-    //     this.centerY = centerY
-    //     this.rotation = rotation
-    //     this.outerWidth = outerWidth
-    //     this.outerHeight = outerHeight
-    //     this.red = red
-    //     this.green = green
-    //     this.blue = blue
-    //     this.alpha = alpha
-    // }
 
-    fillColors(){
-        this.red = Math.round(Math.random() * 255)
-        this.green = Math.round(Math.random() * 255)
-        this.blue = Math.round(Math.random() * 255)
-        this.alpha = Math.round(Math.random() * 100) / 100
-    }
+  fillColors() {
+    this.red = Math.round(Math.random() * 255)
+    this.green = Math.round(Math.random() * 255)
+    this.blue = Math.round(Math.random() * 255)
+    this.alpha = Math.round(Math.random() * 100) / 100
+  }
 
-    generateRBGString(){
-        return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`
-    }
-    
-    generateCenterCoordinates(canvasWidth, canvasHeight){
-        this.width = Math.random() * canvasWidth
-        this.height = Math.random() * canvasHeight
-    }
+  generateRBGString() {
+    return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`
+  }
 
-    generateOuterRect(){
-        
-    }
+  generateCenterCoordinates(canvasWidth, canvasHeight) {
+    this.x = Math.random() * canvasWidth
+    this.y = Math.random() * canvasHeight
+  }
 
-    static randomRect(){
-      const newRect = new Rectangle()
-      newRect.fillColors()
+  generateDimensions(){
+    this.width = Math.random() * 100 + 1
+    this.height = Math.random() * 100 + 1
+  }
 
+  generateRotation(){
+    const randomAngle = Math.random() * 90
+    this.rad = randomAngle * Math.PI / 180
+  }
 
+  generateOuterRect(x, y, rectWidth, rectHeight, rotationRad) {
+    const newWidth = (rectWidth * Math.cos(rotationRad)) + (rectHeight * Math.sin(rotationRad))  //Dimensioni del rettangolo che contiene il rettangolo precedente ruotato
+    const newHeight = (rectWidth * Math.sin(rotationRad)) + (rectHeight * Math.cos(rotationRad))
+    const topLeftX = Math.max(x - newWidth / 2, 0)
+    const topLeftY = Math.max(y - newHeight / 2, 0)
+    const botRightX = Math.min(x + newWidth / 2, width)
+    const botRightY = Math.min(y + newHeight / 2, height)
+    const adjustedNewWidth = botRightX - topLeftX
+    const adjustedNewHeight = botRightY - topLeftY
+    return [Math.floor(topLeftX), Math.floor(topLeftY), Math.floor(adjustedNewWidth), Math.floor(adjustedNewHeight)]
+  }
 
-      return newRect
-    }
+  static randomRect(canvasWidth, canvasHeight, numberRect) {
+    const newRect = new Rectangle()
+    newRect.fillColors()
+    newRect.generateCenterCoordinates(canvasWidth, canvasHeight)
+    newRect.generateDimensions()
+    newRect.generateRotation()
+    return newRect
+  }
 
 }
+
