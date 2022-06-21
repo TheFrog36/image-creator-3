@@ -1,18 +1,18 @@
 class Rectangle {
     
-    constructor(width, height, centerX, centerY, rotation, outerWidth, outerHeight, red, green, blue, alpha){
-        this.width = width
-        this.height = height
-        this.centerX = centerX
-        this.centerY = centerY
-        this.rotation = rotation
-        this.outerWidth = outerWidth
-        this.outerHeight = outerHeight
-        this.red = red
-        this.green = green
-        this.blue = blue
-        this.alpha = alpha
-    }
+    // constructor(width, height, centerX, centerY, rotation, outerWidth, outerHeight, red, green, blue, alpha){
+    //     this.width = width
+    //     this.height = height
+    //     this.centerX = centerX
+    //     this.centerY = centerY
+    //     this.rotation = rotation
+    //     this.outerWidth = outerWidth
+    //     this.outerHeight = outerHeight
+    //     this.red = red
+    //     this.green = green
+    //     this.blue = blue
+    //     this.alpha = alpha
+    // }
 
     fillColors(){
         this.red = Math.round(Math.random() * 255)
@@ -32,6 +32,15 @@ class Rectangle {
 
     generateOuterRect(){
         
+    }
+
+    static randomRect(){
+      const newRect = new Rectangle()
+      newRect.fillColors()
+
+
+
+      return newRect
     }
 
 }
