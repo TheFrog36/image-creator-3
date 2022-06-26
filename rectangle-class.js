@@ -12,18 +12,21 @@ class Rectangle {
   }
 
   generateCenterCoordinates(canvasWidth, canvasHeight) {
-    this.x = Math.random() * canvasWidth
-    this.y = Math.random() * canvasHeight
+    const x = Math.random() * canvasWidth
+    const y = Math.random() * canvasHeight
+    this.x = Math.round(x)
+    this.y = Math.round(y)
   }
 
   generateDimensions(){
-    this.width = Math.random() * 100 + 1
-    this.height = Math.random() * 100 + 1
+    this.width = Math.round(Math.random() * 100 + 1)
+    this.height = Math.round(Math.random() * 100 + 1)
   }
 
   generateRotation(){
     const randomAngle = Math.random() * 90
-    this.rad = randomAngle * Math.PI / 180
+    const rad = randomAngle * Math.PI / 180
+    this.rad = Math.round(rad * 100) / 100
   }
 
   generateOuterRect(x, y, rectWidth, rectHeight, rotationRad) {

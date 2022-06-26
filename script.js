@@ -22,9 +22,9 @@ function init() {
         targetCTX.drawImage(base_image, 0, 0);
         outputCTX.fillStyle = 'rgba(255, 255, 255, 1)'
         outputCTX.fillRect(0, 0, width, height)
-        myWorker.postMessage("start");
+        myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height});
         myWorker.addEventListener("message", function(event) {
-          console.log(event.data)
+          // console.log(event.data)
         });
     }
 }
