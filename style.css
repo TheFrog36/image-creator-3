@@ -1,25 +1,26 @@
-*{
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 0px;
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
 }
 
-html, body {
-    background-color: rgb(20, 20, 40);
+html,
+body {
+  background-color: rgb(109, 109, 109);
 }
 
-.page-container{
-    width: 100%;
-    height: 100%;
+.page-container {
+  width: 100%;
+  height: 100%;
 }
 
-#info{
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    color: rgb(231, 220, 197);
+#info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  color: rgb(231, 220, 197);
 }
 
-.canvas{
-    width: 400px;
+.canvas {
+  width: 400px;
 }

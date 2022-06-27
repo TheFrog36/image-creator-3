@@ -7,8 +7,8 @@ class Rectangle {
     this.alpha = Math.round(Math.random() * 100) / 100
   }
 
-  generateRBGString() {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`
+  static generateRBGString(red, green, blue, alpha) {
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`
   }
 
   generateCenterCoordinates(canvasWidth, canvasHeight) {
@@ -18,9 +18,11 @@ class Rectangle {
     this.y = Math.round(y)
   }
 
-  generateDimensions(){
-    this.width = Math.round(Math.random() * 100 + 1)
-    this.height = Math.round(Math.random() * 100 + 1)
+  generateDimensions(canvasWidth, canvasHeight){
+    // this.width = Math.round(Math.random() * 100 + 1)
+    // this.height = Math.round(Math.random() * 100 + 1)
+    this.width = Math.round(Math.random() * canvasWidth/2 + 1)
+    this.height = Math.round(Math.random() * canvasHeight/2 + 1)
   }
 
   generateRotation(){
@@ -46,7 +48,7 @@ class Rectangle {
     const newRect = new Rectangle()
     newRect.fillColors()
     newRect.generateCenterCoordinates(canvasWidth, canvasHeight)
-    newRect.generateDimensions()
+    newRect.generateDimensions(canvasWidth, canvasHeight)
     newRect.generateRotation()
     return newRect
   }

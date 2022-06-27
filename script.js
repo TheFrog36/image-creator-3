@@ -9,6 +9,7 @@ const outputCTX = outputCanvas.getContext('2d')
 const inputCanvas = document.getElementById('input-canvas')
 const inputCTX = inputCanvas.getContext('2d')
 var myWorker = new Worker('worker.js');
+let inputCanvasData
 
 
 
@@ -22,9 +23,18 @@ function init() {
         targetCTX.drawImage(base_image, 0, 0);
         outputCTX.fillStyle = 'rgba(255, 255, 255, 1)'
         outputCTX.fillRect(0, 0, width, height)
-        myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height});
+        inputCanvasData = inputCTX.getImageData(0,0,width,height)
+        myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height, inputData: inputCanvasData.data});
         myWorker.addEventListener("message", function(event) {
           // console.log(event.data)
+          temp(event.data.rectangle)  //Prende il rettangolo restituito dal worker e lo disegna
+          let temparray = new Uint8ClampedArray()
+          temparray = event.data.imgData
+          inputCanvasData.data = temparray//l'array con i dati probabilmente deve essere un clamped array
+          console.log(event.data.imgData)
+          console.log(inputCanvasData)
+          console.log('empty', checkIfArrayIsEmpty(inputCanvasData.data))
+          inputCTX.putImageData(inputCanvasData,0,0)
         });
     }
 }
@@ -61,3 +71,34 @@ function drawRect(rectangle, outputCTX) {  //Draws the selected rectangle on the
 }
 
 init()
+
+function drawRect([red, green, blue, opacity, randomX, randomY, rectWidth, rectHeight, rad], canvasCTX) {
+  const colorString = 'rgba(#RED, #GREEN, #BLUE, #OPACITY)'
+  canvasCTX.save()
+  canvasCTX.fillStyle = colorString
+    .replace('#RED', red)
+    .replace('#GREEN', green)
+    .replace('#BLUE', blue)
+    .replace('#OPACITY', opacity)
+  canvasCTX.translate(randomX, randomY)
+  canvasCTX.rotate(rad)
+  canvasCTX.fillRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight)
+  canvasCTX.restore()
+}
+
+
+function temp(rectangle){
+  const colorString = Rectangle.generateRBGString(rectangle.red, rectangle.green, rectangle.blue, rectangle.alpha)
+  outputCTX.save()
+  outputCTX.fillStyle = colorString
+  outputCTX.translate(rectangle.x, rectangle.y)
+  outputCTX.rotate(rectangle.rad)
+  outputCTX.fillRect(-rectangle.width / 2, -rectangle.height / 2, rectangle.width, rectangle.height)
+  outputCTX.restore()
+}
+
+function checkIfArrayIsEmpty(array){
+  let counter = 0
+  for(let i = 0; i < array.length; i++) if(array[i] !== 0) counter++
+  return counter
+}
