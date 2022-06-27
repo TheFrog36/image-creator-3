@@ -10,14 +10,17 @@ if ('function' === typeof importScripts) {
       for(let i = 0 ; i < 1; i ++){
         rectangle = Rectangle.randomRect(canvasWidth,canvasHeight,i)
         const pointsRelativeToZero = calculateVerticesRelativeToZeroZero(rectangle)
-        const pointsRelativeToCenter = movePointsRelativeToCenter(pointsRelativeToZero, rectangle.x, rectangle.y)
+        const pointsRelativeToCenter = movePointsRelativeToCenter(pointsRelativeToZero)
         let imgDataArray = new Array(canvasWidth * canvasHeight * 4)
         imgDataArray.fill(0)
         imgDataArray = putVerticesInArray(pointsRelativeToCenter, imgDataArray)
         console.log(pointsRelativeToCenter[0],pointsRelativeToCenter[1],pointsRelativeToCenter[2],pointsRelativeToCenter[3])
         imgDataArray = drawLineBetweenVertices(imgDataArray, pointsRelativeToCenter)
         let rectanglePerimeter = getRectanglePerimeterCoords(imgDataArray, pointsRelativeToCenter)
-        console.log(rectanglePerimeter)
+        rectanglePerimeter = translatePerimeter(rectanglePerimeter)
+        //Traslare il perimetro nelle vere coordinate
+        // perimeter.y += rect.y - 250 (250 dato che al momento il centro del perimetro è al centro della canvas)
+        // also also verificare che le coordiate corrispondano correttamente a un rettangolo disegnato con fillRect()
         self.postMessage(calculateVerticesRelativeToZeroZero(rectangle));
       }
       
@@ -53,14 +56,12 @@ function calculateRectVertex(rectangle, xSide, ySide) {  // Side -1 || 1
   return { Rx, Ry }
 }
 
-function movePointsRelativeToCenter(points, x, y){
-  
-  console.log(x,y)
+function movePointsRelativeToCenter(points){
   let centeredPoints = []
   for (const point of points) {
     centeredPoint = {
-      Rx: point.Rx + x, 
-      Ry: point.Ry + y
+      Rx: point.Rx + canvasWidth / 2, 
+      Ry: point.Ry + canvasHeight / 2
     }
     centeredPoints.push(centeredPoint)
   }
@@ -124,7 +125,7 @@ function getRectanglePerimeterCoords(array, points){
   const rightX = points[2].Rx
   let perimeterData = []
 
-  for(let y = highestY; y < lowestY; y++){
+  for(let y = highestY; y <= lowestY; y++){
     let firstPoint = undefined
     let secondPoint = undefined
     for(let x = leftX; x <= rightX; x++){
@@ -137,4 +138,8 @@ function getRectanglePerimeterCoords(array, points){
   }
   return perimeterData
   // Prendo prima i limiti esterni dei punti
+}
+
+function translatePerimeter(array){
+  console.log(array)
 }
