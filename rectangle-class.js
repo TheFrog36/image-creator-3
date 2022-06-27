@@ -41,7 +41,8 @@ class Rectangle {
     return [Math.floor(topLeftX), Math.floor(topLeftY), Math.floor(adjustedNewWidth), Math.floor(adjustedNewHeight)]
   }
 
-  static randomRect(canvasWidth, canvasHeight, numberRect) {
+  static randomRect(canvasWidth, canvasHeight, order) {
+    this.order = order
     const newRect = new Rectangle()
     newRect.fillColors()
     newRect.generateCenterCoordinates(canvasWidth, canvasHeight)
