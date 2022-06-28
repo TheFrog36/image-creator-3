@@ -105,9 +105,3 @@ function drawRectOnCanvas(rectangle, canvasCTX){
   canvasCTX.fillRect(-rectangle.width / 2, -rectangle.height / 2, rectangle.width, rectangle.height)
   canvasCTX.restore()
 }
-
-function checkIfArrayIsEmpty(array){
-  let counter = 0
-  for(let i = 0; i < array.length; i++) if(array[i] !== 0) counter++
-  return counter
-}

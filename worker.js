@@ -11,24 +11,24 @@ if ('function' === typeof importScripts) {
       canvasWidth = event.data.canvasWidth
       for(let i = 0 ; i < 100; i ++){
         rectangle = Rectangle.randomRect(canvasWidth,canvasHeight,i)
-        // Calcolo i vertici facendo finta che il rettangolo sia a 0,0 
+        // Calculate vertices relative to 0,0
         const pointsRelativeToZero = calculateVerticesRelativeToZeroZero(rectangle)
-        // Sposto il rettangolo al centro della canvas per assicurarmi che drawLineBetweenVertices non esca dall'array
+        // Move vertices to the center of canvas to ensure drawLineBetweenVertices doesn't yeet out of the array
         const pointsRelativeToCenter = movePointsRelativeToCenter(pointsRelativeToZero)
-        // Forse posso skippare new Array e fill(0)? boh
+        // Maybe i can skip the new array part and fill? 
         let imgDataArray = new Array(canvasWidth * canvasHeight * 4)
         imgDataArray.fill(0)
         imgDataArray = putVerticesInArray(pointsRelativeToCenter, imgDataArray)
-        // Calcolo e inserisco tutti i punti tra i vertici
+        // Writing the points between verices in the array
         imgDataArray = drawLineBetweenVertices(imgDataArray, pointsRelativeToCenter)
+        // A perimeter can be described as a y and the left most x and right most x in y where the rect is defined
         let rectanglePerimeter = getRectanglePerimeterCoords(imgDataArray, pointsRelativeToCenter)
         rectanglePerimeter = traslatePerimeter(rectanglePerimeter)
-        // Iniziare il confronto direi?
-          // Prendere target img data
-          // Per ogni rect generato controllare la differenza
-          // Sputare fuori il migliore
-          // Disegnare il migliore in script.js su output 
-
+        // Start the similarity checks?
+        // - Get target img data
+        // - For each rect, check difference
+        // - Save chadRect
+        // - Pass chadRect to script.js and let it draw it
         self.postMessage({rectangle: rectangle, perimeterData: rectanglePerimeter});
       }
       
