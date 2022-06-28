@@ -15,37 +15,37 @@ let counter = 0
 
 
 function init() {
-    base_image = new Image();
-    base_image.src = './assets/images/aivazovsky.png';
-    base_image.onload = () => {
-        width = base_image.width
-        height = base_image.height
-        setCanvasSizes()  //Imposto la dimensione di tutte le canvas alle dimensioni dell'immagine
-        targetCTX.drawImage(base_image, 0, 0);
-        outputCTX.fillStyle = 'rgba(255, 255, 255, 1)'
-        outputCTX.fillRect(0, 0, width, height)
-        inputCanvasData = inputCTX.getImageData(0,0,width,height)
-        myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height, inputData: inputCanvasData.data});
-        myWorker.addEventListener("message", function(event) {
-          // console.log(event.data)
-          drawRectOnCanvas(event.data.rectangle, outputCTX)  //Prende il rettangolo restituito dal worker e lo disegna
-          temparray = event.data.imgData
-          inputCanvasData.data = temparray//l'array con i dati probabilmente deve essere un clamped array
-          counter++
-          console.log(counter);
-          for (const line of event.data.perimeterData) {
-            const pos = (line.y * width + line.x[0]) * 4
-            inputCanvasData.data[pos] = 255
-            inputCanvasData.data[pos + 3] = 255
-            if(line.x[1]){
-              const pos2 = (line.y * width + line.x[1]) * 4
-              inputCanvasData.data[pos2] = 255
-              inputCanvasData.data[pos2 + 3] = 255
-            }
-          }
-          if(counter === 100) inputCTX.putImageData(inputCanvasData, 0, 0)
-        });
-    }
+  base_image = new Image();
+  base_image.src = './assets/images/aivazovsky.png';
+  base_image.onload = () => {
+    width = base_image.width
+    height = base_image.height
+    setCanvasSizes()  //Imposto la dimensione di tutte le canvas alle dimensioni dell'immagine
+    targetCTX.drawImage(base_image, 0, 0);
+    outputCTX.fillStyle = 'rgba(255, 255, 255, 1)'
+    outputCTX.fillRect(0, 0, width, height)
+    inputCanvasData = inputCTX.getImageData(0,0,width,height)
+    myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height, inputData: inputCanvasData.data});
+    
+    myWorker.addEventListener("message", function(event) {
+      drawRectOnCanvas(event.data.rectangle, outputCTX)  //Prende il rettangolo restituito dal worker e lo disegna
+      temparray = event.data.imgData
+      inputCanvasData.data = temparray//l'array con i dati probabilmente deve essere un clamped array
+      counter++
+      console.log(counter)
+      for (const line of event.data.perimeterData) {
+        const pos = (line.y * width + line.x[0]) * 4
+        inputCanvasData.data[pos] = 255
+        inputCanvasData.data[pos + 3] = 255
+        if(line.x[1]){
+          const pos2 = (line.y * width + line.x[1]) * 4
+          inputCanvasData.data[pos2] = 255
+          inputCanvasData.data[pos2 + 3] = 255
+        }
+        inputCTX.putImageData(inputCanvasData, 0, 0)
+      }
+    });
+  }
 }
 
 function setCanvasSizes(){

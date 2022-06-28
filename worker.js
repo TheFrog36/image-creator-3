@@ -11,14 +11,18 @@ if ('function' === typeof importScripts) {
       canvasWidth = event.data.canvasWidth
       for(let i = 0 ; i < 100; i ++){
         rectangle = Rectangle.randomRect(canvasWidth,canvasHeight,i)
+        // Calcolo i vertici facendo finta che il rettangolo sia a 0,0 
         const pointsRelativeToZero = calculateVerticesRelativeToZeroZero(rectangle)
+        // Sposto il rettangolo al centro della canvas per assicurarmi che drawLineBetweenVertices non esca dall'array
         const pointsRelativeToCenter = movePointsRelativeToCenter(pointsRelativeToZero)
+        // Forse posso skippare new Array e fill(0)? boh
         let imgDataArray = new Array(canvasWidth * canvasHeight * 4)
         imgDataArray.fill(0)
         imgDataArray = putVerticesInArray(pointsRelativeToCenter, imgDataArray)
+        // Calcolo e inserisco tutti i punti tra i vertici
         imgDataArray = drawLineBetweenVertices(imgDataArray, pointsRelativeToCenter)
         let rectanglePerimeter = getRectanglePerimeterCoords(imgDataArray, pointsRelativeToCenter)
-        rectanglePerimeter = translatePerimeter(rectanglePerimeter)
+        rectanglePerimeter = traslatePerimeter(rectanglePerimeter)
         // Iniziare il confronto direi?
           // Prendere target img data
           // Per ogni rect generato controllare la differenza
@@ -60,7 +64,7 @@ function calculateRectVertex(rectangle, xSide, ySide) {  // Side -1 || 1
   return { Rx, Ry }
 }
 
-function movePointsRelativeToCenter(points){
+function movePointsRelativeToCenter(points){  
   let centeredPoints = []
   for (const point of points) {
     centeredPoint = {
@@ -92,6 +96,8 @@ function drawLineBetweenVertices(array, points){
 }
 
 function plotLine(x0, y0, x1, y1, array) { // Bresenham's line algorithm
+  // Fast(?) since is not using Sin or Cos
+  // Gets to point, and calculates each pixel between them
   dx = Math.abs(x1 - x0)
   sx = x0 < x1 ? 1 : -1
   dy = -Math.abs(y1 - y0)
@@ -114,7 +120,7 @@ function plotLine(x0, y0, x1, y1, array) { // Bresenham's line algorithm
   }
 }
 
-function putPixel(x,y, array){
+function putPixel(x,y, array){  // No need for colors rn tbh
   const point = (y * canvasWidth + x) * 4
   array[point] = rectangle.red
   array[point + 1] = rectangle.green
@@ -123,7 +129,7 @@ function putPixel(x,y, array){
 }
 
 function getRectanglePerimeterCoords(array, points){
-  const highestY = points[3].Ry
+  const highestY = points[3].Ry  // Defining area to check
   const lowestY = points[1].Ry
   const leftX = points[0].Rx
   const rightX = points[2].Rx
@@ -138,13 +144,14 @@ function getRectanglePerimeterCoords(array, points){
         firstPoint === undefined? firstPoint = x: secondPoint = x
       }
     }
-    perimeterData.push({y: y, x: [firstPoint, secondPoint]})
+    // FirstPoint is the lest most x of the perimeter, Second is the rightMost at line Y
+    perimeterData.push({y: y, x: [firstPoint, secondPoint]})  
   }
   return perimeterData
   // Prendo prima i limiti esterni dei punti
 }
 
-function translatePerimeter(array){
+function traslatePerimeter(array){  // Correcting perimeter coords once traslated to the rectangle real coords
   let traslatedPerimeter = []
   x = rectangle.x
   y = rectangle.y
@@ -153,6 +160,7 @@ function translatePerimeter(array){
     if(traslatedY > canvasHeight-1 || traslatedY < 0) continue 
     traslatedLeftX = point.x[0] + x - canvasWidth / 2
     traslatedRightX = point.x[1] + x - canvasWidth / 2
+    // if the rectangle is going outside left or right, dont save the data of the outside part
     if(traslatedLeftX > canvasWidth) continue
     if(traslatedRightX < 0) continue
     if(traslatedLeftX < 0) traslatedLeftX = 0
