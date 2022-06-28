@@ -19,10 +19,10 @@ class Rectangle {
   }
 
   generateDimensions(canvasWidth, canvasHeight){
-    // this.width = Math.round(Math.random() * 100 + 1)
-    // this.height = Math.round(Math.random() * 100 + 1)
-    this.width = Math.round(Math.random() * canvasWidth/2 + 1)
-    this.height = Math.round(Math.random() * canvasHeight/2 + 1)
+    this.width = Math.round(Math.random() * 100 + 1)
+    this.height = Math.round(Math.random() * 100 + 1)
+    // this.width = Math.round(Math.random() * canvasWidth/2 + 1)
+    // this.height = Math.round(Math.random() * canvasHeight/2 + 1)
   }
 
   generateRotation(){

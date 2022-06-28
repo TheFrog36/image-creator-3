@@ -11,6 +11,7 @@ const inputCTX = inputCanvas.getContext('2d')
 var myWorker = new Worker('worker.js');
 let inputCanvasData
 
+let counter = 0
 
 
 function init() {
@@ -27,14 +28,22 @@ function init() {
         myWorker.postMessage({instruction: 'start', canvasWidth: width, canvasHeight: height, inputData: inputCanvasData.data});
         myWorker.addEventListener("message", function(event) {
           // console.log(event.data)
-          temp(event.data.rectangle)  //Prende il rettangolo restituito dal worker e lo disegna
-          let temparray = new Uint8ClampedArray()
+          drawRectOnCanvas(event.data.rectangle, outputCTX)  //Prende il rettangolo restituito dal worker e lo disegna
           temparray = event.data.imgData
           inputCanvasData.data = temparray//l'array con i dati probabilmente deve essere un clamped array
-          console.log(event.data.imgData)
-          console.log(inputCanvasData)
-          console.log('empty', checkIfArrayIsEmpty(inputCanvasData.data))
-          inputCTX.putImageData(inputCanvasData,0,0)
+          counter++
+          console.log(counter);
+          for (const line of event.data.perimeterData) {
+            const pos = (line.y * width + line.x[0]) * 4
+            inputCanvasData.data[pos] = 255
+            inputCanvasData.data[pos + 3] = 255
+            if(line.x[1]){
+              const pos2 = (line.y * width + line.x[1]) * 4
+              inputCanvasData.data[pos2] = 255
+              inputCanvasData.data[pos2 + 3] = 255
+            }
+          }
+          if(counter === 100) inputCTX.putImageData(inputCanvasData, 0, 0)
         });
     }
 }
@@ -87,14 +96,14 @@ function drawRect([red, green, blue, opacity, randomX, randomY, rectWidth, rectH
 }
 
 
-function temp(rectangle){
+function drawRectOnCanvas(rectangle, canvasCTX){
   const colorString = Rectangle.generateRBGString(rectangle.red, rectangle.green, rectangle.blue, rectangle.alpha)
-  outputCTX.save()
-  outputCTX.fillStyle = colorString
-  outputCTX.translate(rectangle.x, rectangle.y)
-  outputCTX.rotate(rectangle.rad)
-  outputCTX.fillRect(-rectangle.width / 2, -rectangle.height / 2, rectangle.width, rectangle.height)
-  outputCTX.restore()
+  canvasCTX.save()
+  canvasCTX.fillStyle = colorString
+  canvasCTX.translate(rectangle.x, rectangle.y)
+  canvasCTX.rotate(rectangle.rad)
+  canvasCTX.fillRect(-rectangle.width / 2, -rectangle.height / 2, rectangle.width, rectangle.height)
+  canvasCTX.restore()
 }
 
 function checkIfArrayIsEmpty(array){

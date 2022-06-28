@@ -23,4 +23,9 @@ body {
 
 .canvas {
   width: 400px;
+  position: absolute;
+}
+
+#target-canvas{
+  display: none;
 }

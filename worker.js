@@ -6,25 +6,26 @@ if ('function' === typeof importScripts) {
   importScripts('./rectangle-class.js');
   self.addEventListener('message', function(event){
     if(event.data.instruction === 'start'){
-      console.log('worker data', event.data.inputData)
       inputData = event.data.inputData
       canvasHeight = event.data.canvasHeight
       canvasWidth = event.data.canvasWidth
-      for(let i = 0 ; i < 1; i ++){
+      for(let i = 0 ; i < 100; i ++){
         rectangle = Rectangle.randomRect(canvasWidth,canvasHeight,i)
-        console.log(rectangle.x, rectangle.y);
         const pointsRelativeToZero = calculateVerticesRelativeToZeroZero(rectangle)
         const pointsRelativeToCenter = movePointsRelativeToCenter(pointsRelativeToZero)
         let imgDataArray = new Array(canvasWidth * canvasHeight * 4)
         imgDataArray.fill(0)
         imgDataArray = putVerticesInArray(pointsRelativeToCenter, imgDataArray)
-        console.log(pointsRelativeToCenter[0],pointsRelativeToCenter[1],pointsRelativeToCenter[2],pointsRelativeToCenter[3])
         imgDataArray = drawLineBetweenVertices(imgDataArray, pointsRelativeToCenter)
         let rectanglePerimeter = getRectanglePerimeterCoords(imgDataArray, pointsRelativeToCenter)
         rectanglePerimeter = translatePerimeter(rectanglePerimeter)
-        temp(rectanglePerimeter)
-        // also also verificare che le coordiate corrispondano correttamente a un rettangolo disegnato con fillRect()
-        self.postMessage({rectangle: rectangle, imgData:inputData});
+        // Iniziare il confronto direi?
+          // Prendere target img data
+          // Per ogni rect generato controllare la differenza
+          // Sputare fuori il migliore
+          // Disegnare il migliore in script.js su output 
+
+        self.postMessage({rectangle: rectangle, perimeterData: rectanglePerimeter});
       }
       
     }
@@ -152,6 +153,8 @@ function translatePerimeter(array){
     if(traslatedY > canvasHeight-1 || traslatedY < 0) continue 
     traslatedLeftX = point.x[0] + x - canvasWidth / 2
     traslatedRightX = point.x[1] + x - canvasWidth / 2
+    if(traslatedLeftX > canvasWidth) continue
+    if(traslatedRightX < 0) continue
     if(traslatedLeftX < 0) traslatedLeftX = 0
     if(traslatedRightX > canvasWidth) traslatedRightX = canvasWidth-1
     traslatedPerimeter.push({y: traslatedY, x: [traslatedLeftX, traslatedRightX]})
@@ -159,17 +162,3 @@ function translatePerimeter(array){
   return traslatedPerimeter
 }
 
-function temp(rectanglePerimeter){
-  for (const point of rectanglePerimeter) {
-    pos = (point.y * canvasWidth + point.x[0])
-    inputData[pos] = 255
-    inputData[pos+1] = 255
-    inputData[pos+2] = 255
-    inputData[pos + 3] = 255
-    if(point.x[1]){
-      pos = (point.y * canvasWidth + point.x[0])
-      inputData[pos] = 255
-      inputData[pos + 3] = 255
-    } 
-  }
-}
