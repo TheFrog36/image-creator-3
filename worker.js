@@ -31,7 +31,6 @@ if ('function' === typeof importScripts) {
         // - Pass chadRect to script.js and let it draw it
         self.postMessage({rectangle: rectangle, perimeterData: rectanglePerimeter});
       }
-      
     }
   })
   
